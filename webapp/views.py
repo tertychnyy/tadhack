@@ -1,6 +1,6 @@
 from c1cli.entities.CoreResponse import ActionResponse
 from flask import jsonify, request
-from webapp.scripts import get_suggestions_by_name, get_recipe_by_name
+from webapp.scripts import get_suggestions_by_name, get_recipe_by_name, get_discount
 from webapp.wsgi import bot
 
 
@@ -16,9 +16,11 @@ def hello():
 
     recipe = get_recipe_by_name(name)
 
-    retstr = "Your product: {good}\n\nBetter buy: {suggestions}\n\nRecipe by Jamie Oliver: {recipe}".format(good=name,
-                                                                                                        suggestions="\n".join(suggestions),
-                                                                                                            recipe=recipe)
+    discount = get_discount(name)
 
-    rv.messages = [retstr]
+    msg1 = "Customers Who Bought This Item Also Bought: {suggestions}".format(suggestions="\n".join(suggestions))
+    msg2 = "Recipe by Jamie Oliver: {recipe}".format(recipe=recipe)
+    msg3 = "Save {discount} by joining Carrefour MyClub carrefourmyclub.com".format(discount=discount)
+
+    rv.messages = [msg1, msg2, msg3]
     return jsonify(rv.to_dict())
